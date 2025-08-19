@@ -32,9 +32,19 @@
                             const userIP = data.ip;
 
                             const key = "MYKEYHERE";
-                            const finalKey = CryptoJS.AES.encrypt(userIP, key).toString();
-                            console.log(finalKey);
+                            const keyUtf8 = CryptoJS.enc.Utf8.parse(key.padEnd(32));
+                            const iv = CryptoJS.lib.WordArray.random(16);
 
+                            const encrypted = CryptoJS.AES.encrypt(userIP, keyUtf8, {
+                                iv: iv,
+                                padding: CryptoJS.pad.Pkcs7,
+                                mode: CryptoJS.mode.CBC
+                            });
+
+                            const result = iv.concat(encrypted.ciphertext);
+                            const finalKey = CryptoJS.enc.Base64.stringify(result);
+
+                            console.log(finalKey);
                             document.body.innerHTML = "<h2>Your Key:</h2><p>" + finalKey + "</p>";
                         };
                     <\/script>
