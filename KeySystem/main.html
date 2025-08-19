@@ -31,12 +31,9 @@
                         const data = await response.json();
                         const userIP = data.ip;
 
-                        console.log("User IP:", userIP);
-
                         const key = "MYKEYHERE";
 
                         const finalKey = CryptoJS.AES.encrypt(userIP, key).toString();
-                        console.log(finalKey);
 
                         document.body.innerHTML = "<h2>Your Key:</h2><p>" + finalKey + "</p>";
                     };
