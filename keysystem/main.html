@@ -7,44 +7,42 @@
 </head>
 <body>
     <script>
-        if (document.referrer !== "https://linkervertise.com/") {
-            alert("use linkvertise to get the key")
-            window.location.href = "https://www.google.com"
+        // Check if the referrer contains "linkvertise.com"
+        if (!document.referrer.includes("linkvertise.com")) {
+            alert("Use Linkvertise to get the key");
+            window.location.href = "https://www.google.com";
         } else {
+            const keytab = window.open("about:blank");
 
-        const keytab = window.open("about:blank");
+            keytab.document.write(`
+                <html>
+                <head>
+                    <title>Encrypted Key</title>
+                </head>
+                <body>
+                    <p>Loading...</p>
+                    <script>
+                        var script = document.createElement('script');
+                        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js';
+                        document.head.appendChild(script);
 
-        keytab.document.write(`
-            <html>
-            <head>
-                <title>Encrypted Key</title>
-            </head>
-            <body>
-                <p>Loading...</p>
-                <script>
-                    var script = document.createElement('script');
-                    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js';
-                    document.head.appendChild(script);
+                        script.onload = async () => {
+                            const response = await fetch('https://api.ipify.org?format=json');
+                            const data = await response.json();
+                            const userIP = data.ip;
 
-                    script.onload = async () => {
-                        const response = await fetch('https://api.ipify.org?format=json');
-                        const data = await response.json();
-                        const userIP = data.ip;
+                            console.log("User IP:", userIP);
 
-                        console.log("User IP:", userIP);
+                            const key = "MYKEYHERE";
+                            const finalKey = CryptoJS.AES.encrypt(userIP, key).toString();
+                            console.log(finalKey);
 
-                        const key = "MYKEYHERE";
-
-                        const finalKey = CryptoJS.AES.encrypt(userIP, key).toString();
-                        console.log(finalKey);
-
-                        document.body.innerHTML = "<h2>Your Key:</h2><p>" + finalKey + "</p>";
-                    };
-                <\/script>
-            </body>
-            </html>
-        `);
-
+                            document.body.innerHTML = "<h2>Your Key:</h2><p>" + finalKey + "</p>";
+                        };
+                    <\/script>
+                </body>
+                </html>
+            `);
         }
     </script>
 </body>
